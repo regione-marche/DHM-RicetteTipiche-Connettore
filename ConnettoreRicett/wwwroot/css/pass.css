@@ -1,0 +1,197 @@
+﻿/* CONTACT FORM */
+#pass-chat {
+    position: fixed;
+    z-index: 3;
+    bottom: 15px;
+    right: 90px;
+    width: 100px;
+    max-width: 512px;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 20px;
+    padding: 6px 20px;
+}
+
+@media (min-width: 1200px) {
+    #pass-chat {
+        bottom: 32px;
+    }
+}
+
+#hdbtntoggle {
+    padding: 2px;
+    float: right;
+}
+
+#helpdesk h3 {
+    margin: 0;
+    font-size: 0;
+    cursor: pointer;
+}
+
+#helpdesk .expanded h3 {
+    margin: 0;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+    #helpdesk h3 .icon {
+        width: 16px;
+        height: 16px;
+        margin-right: 4px;
+    }
+
+    #helpdesk h3 a {
+        margin-left: 4px;
+    }
+
+#helpdesk input {
+    display: block;
+    width: 100%;
+    height: 39px;
+    padding: 6px 12px;
+    font-size: 18px;
+    line-height: 1.428571429;
+    color: #555555;
+    background-color: #fff;
+    background-image: none;
+    border: 1px solid #ccc;
+    border-radius: 0px;
+}
+
+#helpdesk label {
+    width: 100%;
+}
+
+#hdlnktoList a, #myTicketsBtn {
+    width: 100%;
+    color: #ffffff;
+    background-color: #66a5e3;
+    border-color: #66a5e3;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 600;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none;
+    border: none;
+    white-space: nowrap;
+    text-transform: uppercase;
+    padding: 12px 30px;
+    font-size: 16px;
+    line-height: 1.428571429;
+    border-radius: 0px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-decoration: none;
+}
+
+    #hdlnktoList a:hover, #hdlnktoList a[hover], #myTicketsBtn:hover, #myTicketsBtn[hover] {
+        color: #ffffff;
+        background-color: #3b8cdb;
+        border-color: #3287da;
+    }
+
+#hdlnktoList .icon {
+    margin-right: 10px;
+    width: 16px;
+    height: 16px;
+}
+
+.badge-primary {
+    --bs-bg-opacity: 1;
+    background-color: rgba(var(--bs-primary-rgb), var(--bs-bg-opacity)) !important;
+}
+
+/* Nascondo il badge con il numero di ticket */
+#hdlnktoList .badge {
+    display: none;
+}
+
+#hdbtnsend, #hdbtncancel, #myTicketsBtn, #toFormBtn {
+    width: 100%
+}
+
+#hdbtnsend, #toFormBtn {
+    color: #fff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
+    margin-bottom: 4px;
+}
+
+    #hdbtnsend:disabled, #hdbtnsend[disabled], #toFormBtn:disabled, #toFormBtn[disabled] {
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+        color: #fff;
+    }
+
+    #hdbtnsend:hover, #hdbtnsend[hover], #toFormBtn:hover, #toFormBtn[hover] {
+        color: #fff;
+        background-color: #449d44;
+        border-color: #398439;
+    }
+
+#hdbtncancel {
+    color: #fff;
+    background-color: #5c6f82;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 15%), 0 1px 1px rgb(0 0 0 / 8%);
+    margin-bottom: 10px;
+}
+
+    #hdbtncancel:disabled, #hdbtncancel[disabled] {
+        color: #fff;
+        background-color: #5c6f82;
+        border-color: #5c6f82;
+    }
+
+    #hdbtncancel:hover, #hdbtncancel[hover] {
+        color: #fff;
+        background-color: #4c5c6c;
+        border-color: #475664;
+    }
+
+#hdbtnsend .icon {
+    display: none;
+}
+
+/*Pulsante lista ticket post creazione */
+#myTicketsBtn {
+    margin: 10px 0px;
+}
+
+    #myTicketsBtn .icon {
+        float: left;
+        margin-right: 10px;
+    }
+
+
+/*Pulsante crea nuovo ticket */
+#toFormBtn {
+    margin-bottom: 10px;
+}
+
+    #toFormBtn .icon {
+        margin-right: 10px;
+    }
+
+/* Rimuovo il primo br sulla form crea ticket pass e la div form-check */
+#hdassistant br:first-of-type, #hdassistant .form-check {
+    display: none;
+}
+
+/* textarea richiesta pass */
+#hdrequest {
+    max-height: 125px;
+}
+
+.hdrequest label {
+    text-transform: capitalize;
+}
+
+#hdlnktoList, #myTicketsBtn {
+    display: none;
+}

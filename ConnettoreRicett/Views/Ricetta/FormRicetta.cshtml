@@ -1,0 +1,713 @@
+﻿@model ConnettoreRicett.Models.Ricetta
+@{
+    ViewData["Title"] = "Inserisci una Ricetta";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">@ViewData["Title"]</h2>
+                </div>
+                @functions {
+                    private bool IsRequiredVocabulary(string vocabularyKey)
+                    {
+                        return vocabularyKey == "Licenza" ||
+                        vocabularyKey == "Categoria Ricetta" ||
+                        vocabularyKey == "Riferimento Geografico" ||
+                        vocabularyKey == "Tema";
+                    }
+                }
+                <div class="card-body">
+                    <form asp-action="InviaRicetta" method="post" enctype="multipart/form-data" novalidate>
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                        <div class="text-center mb-3">
+                            <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#importCsvModal">
+                                Importa Ricette da CSV
+                            </button>
+                        </div>
+
+
+                        <!-- Denominazione -->
+                        <div class="form-group">
+                            <label asp-for="Denominazione" class="font-weight-bold text-primary">Denominazione *</label>
+                            <input asp-for="Denominazione" class="form-control" required />
+                            <span asp-validation-for="Denominazione" class="text-danger"></span>
+                        </div>
+
+                        <!-- Presentazione - non obbligatorio -->
+                        <div class="form-group">
+                            <label asp-for="Presentazione" class="font-weight-bold text-primary">Presentazione</label>
+                            <textarea asp-for="Presentazione" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <!-- Difficoltà - non obbligatorio -->
+                        <div class="form-group">
+                            <label asp-for="Difficolta" class="font-weight-bold text-primary">Difficoltà</label>
+                            <input asp-for="Difficolta" class="form-control" />
+                        </div>
+
+                        <!-- Preparazione - non obbligatorio -->
+                        <div class="form-group">
+                            <label asp-for="Preparazione" class="font-weight-bold text-primary">Preparazione</label>
+                            <textarea asp-for="Preparazione" class="form-control" rows="10"></textarea>
+                        </div>
+
+                        <!-- Cottura - non obbligatorio -->
+                        <div class="form-group">
+                            <label asp-for="Cottura" class="font-weight-bold text-primary">Cottura</label>
+                            <textarea asp-for="Cottura" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <!-- Dosi - non obbligatorio -->
+                        <div class="form-group">
+                            <label asp-for="Dosi" class="font-weight-bold text-primary">Dosi</label>
+                            <textarea asp-for="Dosi" class="form-control" rows="5"></textarea>
+                        </div>
+
+                        <!-- Costo - non obbligatorio -->
+                        <div class="form-group">
+                            <label asp-for="Costo" class="font-weight-bold text-primary">Costo</label>
+                            <input asp-for="Costo" class="form-control" />
+                        </div>
+
+                        <!-- Ingredienti - non obbligatorio -->
+                        <div class="form-group">
+                            <label asp-for="Ingredienti" class="font-weight-bold text-primary">Ingredienti</label>
+                            <textarea asp-for="Ingredienti" class="form-control"></textarea>
+                        </div>
+
+                                                <div class="vocabularies-section mt-4">
+                            @foreach (var vocabularyGroup in Model.VocabularyCategories)
+                            {
+                                @if (vocabularyGroup.Key == "Licenza" || vocabularyGroup.Key == "Tema")
+                                {
+                                    continue;
+                                }
+                                <div class="form-group mb-4">
+                                    <h5 class="text-primary">@vocabularyGroup.Key @(IsRequiredVocabulary(vocabularyGroup.Key) ? "*" : "")</h5>
+                                    <div class="form-check-group">
+                                        @if (vocabularyGroup.Key == "Categoria Ricetta")
+                                        {
+                                            <div class="form-check-group">
+                                                @foreach (var category in vocabularyGroup.Value)
+                                                {
+                                                    <div class="form-check">
+                                                        <input type="radio"
+                                                               id="recipe_@category.Id"
+                                                               name="RicettaCategory"
+                                                               value="@category.Id"
+                                                               class="form-check-input"
+                                                               required />
+                                                        <label class="form-check-label" for="recipe_@category.Id">
+                                                            @category.Name
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        else if (vocabularyGroup.Key == "Riferimento Geografico")
+                                        {
+                                            <div class="position-relative">
+                                                <div class="search-container mb-3">
+                                                    <div class="form-group">
+                                                        <input type="text"
+                                                               class="form-control"
+                                                               id="searchGeographic"
+                                                               placeholder="Cerca località..."
+                                                               aria-label="Cerca località" />
+                                                    </div>
+                                                </div>
+                                                <div id="searchResults" class="list-group mb-3">
+                                                </div>
+                                                <div id="selectedLocations" class="mb-3">
+                                                </div>
+                                                <div class="form-check-group" style="display: none;">
+                                                    @foreach (var category in vocabularyGroup.Value)
+                                                    {
+                                                        <div class="form-check">
+                                                            <input type="checkbox"
+                                                                   id="category_@category.Id"
+                                                                   name="TaxonomyCategoryIds"
+                                                                   value="@category.Id"
+                                                                   class="form-check-input geographic-checkbox"
+                                                                   required="@IsRequiredVocabulary(vocabularyGroup.Key)" />
+                                                            <label class="form-check-label" for="category_@category.Id">
+                                                                @category.Name
+                                                            </label>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="form-check-group">
+                                                @foreach (var category in vocabularyGroup.Value)
+                                                {
+                                                    <div class="form-check">
+                                                        <input type="checkbox"
+                                                               id="category_@category.Id"
+                                                               name="TaxonomyCategoryIds"
+                                                               value="@category.Id"
+                                                               class="form-check-input"
+                                                               required="@IsRequiredVocabulary(vocabularyGroup.Key)" />
+                                                        <label class="form-check-label" for="category_@category.Id">
+                                                            @category.Name
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Sezione Selezione Località -->
+                        <div class="location-picker-wrapper mb-4 d-none">
+                            <div class="search-location-container mb-3">
+                                <label class="font-weight-bold text-primary mb-2">Cerca località</label>
+                                <div class="input-group">
+                                    <input type="text"
+                                           id="locationSearch"
+                                           class="form-control"
+                                           placeholder="Inserisci il nome della località..." />
+                                    <button class="btn btn-outline-primary" type="button" id="searchButton">
+                                        <i class="bi bi-search"></i> Cerca
+                                    </button>
+                                </div>
+                                <!-- Container per i risultati della ricerca -->
+                                <div id="locationSearchResults" class="list-group mt-2" style="display:none;"></div>
+                            </div>
+
+                            <div class="row g-3">
+                                <!-- Latitudine -->
+                                <div class="col-md-6">
+                                    <div class="coordinate-field">
+                                        <label for="Latitudine" class="required">Latitudine</label>
+                                        <input type="number"
+                                               step="any"
+                                               class="form-control"
+                                               id="Latitudine"
+                                               name="Latitudine"
+                                               required />
+                                    </div>
+                                </div>
+
+                                <!-- Longitudine -->
+                                <div class="col-md-6">
+                                    <div class="coordinate-field">
+                                        <label for="Longitudine" class="required">Longitudine</label>
+                                        <input type="number"
+                                               step="any"
+                                               class="form-control"
+                                               id="Longitudine"
+                                               name="Longitudine"
+                                               required />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Area di Interesse -->
+                        <div class="form-group d-none">
+                            <label asp-for="AreaDiInteresse" class="font-weight-bold text-primary"></label>
+                            <textarea asp-for="AreaDiInteresse" class="form-control" rows="10"></textarea>
+                            <small class="form-text text-muted">
+                                Puoi copiare il tuo GEOJSON da <a href="https://geojson.io/" target="_blank">questo sito</a>.
+                            </small>
+                        </div>
+
+                        <!-- Immagine Principale -->
+                        <div class="form-group mb-3 no-floating-label">
+                            <label for="immaginePrincipaleFile" class="form-label font-weight-bold text-primary">Immagine Principale*</label>
+                            <input type="file" id="immaginePrincipaleFile" name="immaginePrincipaleFile" class="form-control" required />
+                        </div>
+
+                        <!-- Contenitore per altre immagini -->
+                        <div id="altraImmagineFields" class="mb-3">
+                            <div class="form-group mb-3 no-floating-label" id="altraImmagineField_0">
+                                <label for="altraImmagineFile_0" class="form-label font-weight-bold text-primary">Altra Immagine</label>
+                                <input type="file" id="altraImmagineFile_0" name="altraImmagineFiles" class="form-control" />
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-outline-primary mb-4" onclick="addAltraImmagineField()">Aggiungi Altra Immagine</button>
+
+                        <!-- Accordion META -->
+                        <div class="accordion" id="metaAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="headingMeta">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseMeta" aria-expanded="false" aria-controls="collapseMeta">
+                                        <h4 class="text-primary mb-0">META</h4>
+                                    </button>
+                                </h2>
+                                <div id="collapseMeta" class="accordion-collapse collapse" aria-labelledby="headingMeta" data-bs-parent="#metaAccordion">
+                                    <div class="accordion-body">
+                                        <!-- Gruppo di campi META -->
+                                        <div id="metaFields" class="mb-4">
+                                            <div class="form-row meta-field mb-2" id="metaField_0">
+                                                <div class="row g-2">
+                                                    <div class="col-5">
+                                                        <input type="text" name="MetaFields[0].Chiave" class="form-control" placeholder="Chiave" />
+                                                    </div>
+                                                    <div class="col-5">
+                                                        <input type="text" name="MetaFields[0].Valore" class="form-control" placeholder="Valore" />
+                                                    </div>
+                                                    <div class="col-2">
+                                                        <button type="button" class="btn btn-danger btn-sm d-none" onclick="removeMetaField(0)">
+                                                            ✕
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <button type="button" class="btn btn-outline-primary" onclick="addMetaField()">
+                                            <i class="bi bi-plus-circle me-2"></i>Aggiungi campo META
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Invia -->
+                        <div class="text-center my-5">
+                            <input type="submit" value="Invia Ricetta" class="btn btn-primary btn-lg" />
+                        </div>
+                    </form>
+
+                    <!-- Modal per il caricamento del CSV -->
+                    <div class="modal fade" id="importCsvModal" tabindex="-1" aria-labelledby="importCsvModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="importCsvModalLabel">Importa Ricette da Excel</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form asp-action="ImportaExcel" method="post" enctype="multipart/form-data">
+                                        <div class="form-group">
+                                            <label for="excelFile" class="form-label active">Seleziona file Excel</label>
+                                            <input type="file" name="excelFile" id="excelFile" class="form-control" required />
+                                        </div>
+                                        <div class="text-center mt-3">
+                                            <button type="submit" class="btn btn-primary">Carica Excel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    @section Scripts {
+
+                        <script>
+
+                                                       document.addEventListener('DOMContentLoaded', function () {
+                                const searchInput = document.getElementById('searchGeographic');
+                                const searchResults = document.getElementById('searchResults');
+                                const selectedLocations = document.getElementById('selectedLocations');
+                                const checkboxes = document.querySelectorAll('.geographic-checkbox');
+                                const latInput = document.getElementById('Latitudine');
+                                const lngInput = document.getElementById('Longitudine');
+                                const areaInteresseInput = document.getElementById('AreaDiInteresse');
+                                let selectedIds = new Set();
+                                let selectedLocationsData = [];
+
+                            async function getGeoJsonForLocation(locationName) {
+                                try {
+                                    const query = `${locationName}, Marche, Italia`;
+                                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`);
+                                    const data = await response.json();
+
+                                    if (data && data[0]) {
+                                        return {
+                                            lat: parseFloat(data[0].lat),
+                                            lon: parseFloat(data[0].lon),
+                                            geojson: {
+                                                type: "Point",
+                                                coordinates: [parseFloat(data[0].lon), parseFloat(data[0].lat)]
+                                            }
+                                        };
+                                    }
+                                    return null;
+                                } catch (error) {
+                                    console.error('Errore nel recupero GeoJSON:', error);
+                                    return null;
+                                }
+                            }
+
+                                function updateCombinedGeoJson() {
+                                    if (selectedLocationsData.length === 0) {
+                                        areaInteresseInput.value = '';
+                                        return;
+                                    }
+
+                                    const features = selectedLocationsData.map(location => ({
+                                        type: "Feature",
+                                        properties: {
+                                            name: location.name
+                                        },
+                                        geometry: location.geojson
+                                    }));
+
+                                    const combinedGeoJson = {
+                                        type: "FeatureCollection",
+                                        features: features
+                                    };
+
+                                    areaInteresseInput.value = JSON.stringify(combinedGeoJson, null, 2);
+                                }
+
+                                async function selectLocation(locationData) {
+                                    if (!selectedIds.has(locationData.id)) {
+                                        const geoData = await getGeoJsonForLocation(locationData.name);
+
+                                        if (geoData) {
+                                            selectedIds.add(locationData.id);
+                                            const checkbox = document.querySelector(`#category_${locationData.id}`);
+                                            if (checkbox) checkbox.checked = true;
+
+                                            if (selectedLocationsData.length === 0) {
+                                                latInput.value = geoData.lat.toFixed(6);
+                                                lngInput.value = geoData.lon.toFixed(6);
+                                            }
+
+                                            selectedLocationsData.push({
+                                                id: locationData.id,
+                                                name: locationData.name,
+                                                lat: geoData.lat,
+                                                lon: geoData.lon,
+                                                geojson: geoData.geojson
+                                            });
+
+                                            const badge = document.createElement('span');
+                                            badge.className = 'badge bg-primary me-2 mb-2';
+                                            badge.innerHTML = `
+                                                ${locationData.name}
+                                                <button type="button" class="btn-close btn-close-white ms-2"
+                                                        aria-label="Close"
+                                                        data-id="${locationData.id}">
+                                                </button>
+                                            `;
+                                            selectedLocations.appendChild(badge);
+
+                                            updateCombinedGeoJson();
+                                        }
+                                    }
+                                    searchInput.value = '';
+                                    searchResults.style.display = 'none';
+                                }
+
+                                function searchLocations(searchTerm) {
+                                    searchTerm = searchTerm.toLowerCase();
+                                    const results = Array.from(checkboxes)
+                                        .filter(checkbox => !selectedIds.has(checkbox.value))
+                                        .map(checkbox => ({
+                                            id: checkbox.value,
+                                            name: checkbox.nextElementSibling.textContent.trim()
+                                        }))
+                                        .filter(location => location.name.toLowerCase().includes(searchTerm));
+
+                                    displaySearchResults(results);
+                                }
+
+                                function displaySearchResults(results) {
+                                    searchResults.innerHTML = '';
+                                    if (results.length > 0) {
+                                        results.forEach(result => {
+                                            const div = document.createElement('div');
+                                            div.className = 'list-group-item list-group-item-action';
+                                            div.textContent = result.name;
+                                            div.style.cursor = 'pointer';
+                                            div.onclick = () => selectLocation(result);
+                                            searchResults.appendChild(div);
+                                        });
+                                        searchResults.style.display = 'block';
+                                    } else {
+                                        searchResults.style.display = 'none';
+                                    }
+                                }
+
+                                selectedLocations.addEventListener('click', (e) => {
+                                    const button = e.target.closest('.btn-close');
+                                    if (button) {
+                                        const id = button.getAttribute('data-id');
+                                        selectedIds.delete(id);
+
+                                        selectedLocationsData = selectedLocationsData.filter(loc => loc.id !== id);
+
+                                        if (selectedLocationsData.length === 0) {
+                                            latInput.value = '';
+                                            lngInput.value = '';
+                                        }
+                                        else if (id === selectedLocationsData[0].id && selectedLocationsData.length > 0) {
+                                            latInput.value = selectedLocationsData[0].lat.toFixed(6);
+                                            lngInput.value = selectedLocationsData[0].lon.toFixed(6);
+                                        }
+
+                                        const checkbox = document.querySelector(`#category_${id}`);
+                                        if (checkbox) checkbox.checked = false;
+                                        button.closest('.badge').remove();
+
+                                        updateCombinedGeoJson();
+                                    }
+                                });
+
+                                searchInput.addEventListener('input', (e) => {
+                                    const searchTerm = e.target.value.trim();
+                                    if (searchTerm.length >= 2) {
+                                        searchLocations(searchTerm);
+                                    } else {
+                                        searchResults.style.display = 'none';
+                                    }
+                                });
+
+                                document.addEventListener('click', (e) => {
+                                    if (!searchResults.contains(e.target) && !searchInput.contains(e.target)) {
+                                        searchResults.style.display = 'none';
+                                    }
+                                });
+                            });
+                        </script>
+
+
+                        <script>
+                            document.querySelector('form').addEventListener('submit', function (e) {
+                                let isValid = true;
+                                const requiredFields = {
+                                    'Denominazione': document.querySelector('[name="Denominazione"]'),
+                                    'Latitudine': document.querySelector('[name="Latitudine"]'),
+                                    'Longitudine': document.querySelector('[name="Longitudine"]'),
+                                    'immaginePrincipaleFile': document.querySelector('[name="immaginePrincipaleFile"]')
+                                };
+
+                                Object.entries(requiredFields).forEach(([fieldName, element]) => {
+                                    if (!element.value) {
+                                        isValid = false;
+                                        alert(`Il campo ${fieldName} è obbligatorio`);
+                                    }
+                                });
+
+                                const requiredVocabularies = ['Licenza', 'Categoria Ricetta', 'Riferimento Geografico', 'Tema'];
+                                const groups = document.querySelectorAll('.form-check-group');
+
+                                groups.forEach(group => {
+                                    const parentGroup = group.closest('.form-group');
+                                    const parentTitle = parentGroup.querySelector('h5').textContent.trim();
+                                    const vocabularyName = parentTitle.replace('*', '').trim();
+                                    const isRequired = requiredVocabularies.includes(vocabularyName);
+
+                                    if (!isRequired) return;
+
+                                    const isRadioGroup = group.querySelector('input[type="radio"]') !== null;
+
+                                    if (isRadioGroup) {
+                                        const checkedRadio = group.querySelector('input[type="radio"]:checked');
+                                        if (!checkedRadio) {
+                                            isValid = false;
+                                            alert(`Seleziona una ${vocabularyName}`);
+                                        }
+                                    } else {
+                                        const checkedBoxes = group.querySelectorAll('input[type="checkbox"]:checked');
+                                        if (checkedBoxes.length === 0) {
+                                            isValid = false;
+                                            alert(`Seleziona almeno una opzione per ${vocabularyName}`);
+                                        }
+                                    }
+                                });
+
+                                const latRegex = /^\d+(\.\d{1,99})?$/;
+                                const latValue = document.querySelector('[name="Latitudine"]').value;
+                                const longValue = document.querySelector('[name="Longitudine"]').value;
+
+                                if (latValue && !latRegex.test(latValue)) {
+                                    isValid = false;
+                                    alert('La Latitudine deve essere un numero decimale.');
+                                }
+                                if (longValue && !latRegex.test(longValue)) {
+                                    isValid = false;
+                                    alert('La Longitudine deve essere un numero decimale.');
+                                }
+
+                                if (!isValid) {
+                                    e.preventDefault();
+                                }
+                            });
+                        </script>
+
+                        <script>
+                            let altraImmagineFieldCount = 1;
+
+                            function addAltraImmagineField() {
+                                const altraImmagineFields = document.getElementById('altraImmagineFields');
+                                const newField = document.createElement('div');
+                                newField.className = 'form-group mb-3 no-floating-label';
+                                newField.id = `altraImmagineField_${altraImmagineFieldCount}`;
+                                newField.innerHTML = `
+                                                <label for="altraImmagineFile_${altraImmagineFieldCount}" class="form-label font-weight-bold text-primary">Altra Immagine</label>
+                                                <input type="file" id="altraImmagineFile_${altraImmagineFieldCount}" name="altraImmagineFiles" class="form-control" />
+                                                <button type="button" class="btn btn-danger btn-sm mt-2" onclick="removeAltraImmagineField(${altraImmagineFieldCount})">Rimuovi</button>
+                                            `;
+                                altraImmagineFields.appendChild(newField);
+                                altraImmagineFieldCount++;
+                            }
+
+                            function removeAltraImmagineField(index) {
+                                const field = document.getElementById(`altraImmagineField_${index}`);
+                                field.remove();
+                            }
+                        </script>
+
+                        <script>
+                            let metaFieldCount = 1; 
+
+                            function addMetaField() {
+                                const metaFields = document.getElementById('metaFields');
+                                const newField = document.createElement('div');
+                                newField.className = 'form-row meta-field mb-2';
+                                newField.id = `metaField_${metaFieldCount}`;
+                                newField.innerHTML = `
+                                                                <div class="row g-2">
+                                                                    <div class="col-5">
+                                                                        <input type="text" name="MetaFields[${metaFieldCount}].Chiave" class="form-control" placeholder="Chiave" />
+                                                                    </div>
+                                                                    <div class="col-5">
+                                                                        <input type="text" name="MetaFields[${metaFieldCount}].Valore" class="form-control" placeholder="Valore" />
+                                                                    </div>
+                                                                    <div class="col-2">
+                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeMetaField(${metaFieldCount})">
+                                                        ✕
+                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                            `;
+                                metaFields.appendChild(newField);
+                                metaFieldCount++;
+                                toggleRemoveButton('metaFields');
+                            }
+
+                            function removeMetaField(index) {
+                                const field = document.getElementById(`metaField_${index}`);
+                                field.remove();
+                                toggleRemoveButton('metaFields');
+                            }
+
+                            function toggleRemoveButton(containerId) {
+                                const container = document.getElementById(containerId);
+                                const fields = container.querySelectorAll('.meta-field');
+
+                                if (fields.length === 1) {
+                                    fields[0].querySelector('.btn-danger')?.classList.add('d-none');
+                                } else {
+                                    fields.forEach(field => {
+                                        field.querySelector('.btn-danger')?.classList.remove('d-none');
+                                    });
+                                }
+                            }
+
+                            document.addEventListener('DOMContentLoaded', function () {
+                                toggleRemoveButton('metaFields');
+
+                                const metaAccordion = document.getElementById('metaAccordion');
+                                if (metaAccordion) {
+                                    metaAccordion.addEventListener('show.bs.collapse', function () {
+                                        setTimeout(() => {
+                                            window.scrollTo({
+                                                top: metaAccordion.offsetTop,
+                                                behavior: 'smooth'
+                                            });
+                                        }, 200);
+                                    });
+                                }
+                            });
+                        </script>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                const locationSearch = document.getElementById('locationSearch');
+                                const locationSearchResults = document.getElementById('locationSearchResults');
+                                const searchButton = document.getElementById('searchButton');
+                                const latInput = document.getElementById('Latitudine');
+                                const lngInput = document.getElementById('Longitudine');
+
+                                let searchTimeout;
+
+                                async function searchLocation(searchTerm) {
+                                    try {
+                                        const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(searchTerm)}&limit=5`);
+                                        const data = await response.json();
+
+                                        locationSearchResults.innerHTML = '';
+
+                                        if (data.length > 0) {
+                                            data.forEach(result => {
+                                                const resultItem = document.createElement('a');
+                                                resultItem.className = 'list-group-item list-group-item-action';
+                                                resultItem.innerHTML = `${result.display_name}`;
+
+                                                resultItem.addEventListener('click', () => {
+                                                    latInput.value = parseFloat(result.lat).toFixed(6);
+                                                    lngInput.value = parseFloat(result.lon).toFixed(6);
+                                                    locationSearch.value = result.display_name;
+                                                    locationSearchResults.style.display = 'none';
+                                                });
+
+                                                locationSearchResults.appendChild(resultItem);
+                                            });
+
+                                            locationSearchResults.style.display = 'block';
+                                        } else {
+                                            locationSearchResults.innerHTML = '<div class="list-group-item">Nessun risultato trovato</div>';
+                                            locationSearchResults.style.display = 'block';
+                                        }
+                                    } catch (error) {
+                                        console.error('Errore nella ricerca:', error);
+                                        locationSearchResults.innerHTML = '<div class="list-group-item text-danger">Errore nella ricerca</div>';
+                                        locationSearchResults.style.display = 'block';
+                                    }
+                                }
+
+                                searchButton.addEventListener('click', () => {
+                                    const searchTerm = locationSearch.value.trim();
+                                    if (searchTerm) {
+                                        searchLocation(searchTerm);
+                                    }
+                                });
+
+                                locationSearch.addEventListener('input', (e) => {
+                                    clearTimeout(searchTimeout);
+                                    const searchTerm = e.target.value.trim();
+
+                                    if (searchTerm.length >= 3) {
+                                        searchTimeout = setTimeout(() => {
+                                            searchLocation(searchTerm);
+                                        }, 500);
+                                    } else {
+                                        locationSearchResults.style.display = 'none';
+                                    }
+                                });
+
+                                document.addEventListener('click', (e) => {
+                                    if (!locationSearchResults.contains(e.target) && e.target !== locationSearch && e.target !== searchButton) {
+                                        locationSearchResults.style.display = 'none';
+                                    }
+                                });
+
+                                locationSearch.addEventListener('keypress', (e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        const searchTerm = locationSearch.value.trim();
+                                        if (searchTerm) {
+                                            searchLocation(searchTerm);
+                                        }
+                                    }
+                                });
+                            });</script>
+                    }

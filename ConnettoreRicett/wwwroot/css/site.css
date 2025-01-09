@@ -1,0 +1,154 @@
+.footer {
+    background: #30373d;
+    color: #ffffff;
+    padding-top: 32px;
+}
+    .footer a {
+        color: #ffffff;
+    }
+
+/* Header on scroll */
+#header-nav-wrapper.header-slim .it-header-center-wrapper {
+    height: 60px;
+    transition: all 0.5s ease-out;
+}
+
+#header-nav-wrapper.header-slim .it-brand-wrapper .icon {
+    height: 40px;
+    transition: all 0.5s ease-out;
+}
+
+#header-nav-wrapper.header-slim .it-brand-wrapper .it-brand-title {
+    height: 27px;
+    transition: all 0.5s ease-out;
+}
+
+#header-nav-wrapper.header-slim .it-search-wrapper .search-link {
+    height: 32px;
+    width: 32px;
+    transition: all 0.5s ease-out;
+}
+
+.icon-awesome {
+    color: #06c;
+}
+
+.alert {
+    position: fixed !important;
+    bottom: 10px;
+    right: 10px;
+    z-index: 90;
+}
+
+.alert-dismissible .btn-close {
+    top: 25% !important;
+}
+
+
+
+
+.ct-chart .ct-legend {
+    position: relative;
+    z-index: 10;
+    list-style: none;
+    text-align: center;
+}
+
+    .ct-chart .ct-legend li {
+        position: relative;
+        padding-left: 23px;
+        margin-right: 10px;
+        margin-bottom: 3px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+        .ct-chart .ct-legend li:before {
+            width: 12px;
+            height: 12px;
+            margin-top: 8px;
+            position: absolute;
+            left: 0;
+            content: '';
+            border: 3px solid transparent;
+            border-radius: 2px;
+        }
+
+        .ct-chart .ct-legend li .inactive:before {
+            background: transparent;
+        }
+
+        .ct-chart .ct-legend li:nth-child(1)::before {
+            background-color: #d70206;
+        }
+
+        .ct-chart .ct-legend li:nth-child(2)::before {
+            background-color: #f05b4f;
+        }
+
+        .ct-chart .ct-legend li:nth-child(3)::before {
+            background-color: #f4c63d;
+        }
+
+        .ct-chart .ct-legend li:nth-child(1n+4)::before {
+            background-color: #F06292;
+        }
+
+    .ct-chart .ct-legend .ct-legend-inside {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(1) .ct-point,
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(1) .ct-line {
+    stroke: #d70206;
+}
+
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(2) .ct-point,
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(2) .ct-line {
+    stroke: #f05b4f;
+}
+
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(3) .ct-point,
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(3) .ct-line {
+    stroke: #f4c63d;
+}
+
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(1n+4) .ct-point,
+.ct-chart g:not(.ct-grids):not(.ct-labels) g:nth-child(1n+4) .ct-line {
+    stroke: #F06292;
+}
+
+/* Disabilita le etichette flottanti solo per i campi file */
+.no-floating-label label {
+    position: static;
+    transform: none;
+    margin-bottom: 0.5rem;
+}
+
+.no-floating-label input[type="file"] {
+    position: relative;
+    z-index: 1;
+}
+
+.form-control {
+    background-color: #f8f9fa;
+    border: 2px solid #007bff;
+}
+
+/* Rimuove la linea di base dagli input */
+input.form-control, textarea.form-control {
+    border: 2px solid #007bff; /* Stesso bordo per input e textarea */
+    background-color: #f8f9fa; /* Sfondo uniforme per tutti */
+    box-shadow: none; /* Rimuove eventuali ombre */
+    transition: border-color 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+    /* Stesso comportamento in focus per input e textarea */
+    input.form-control:focus, textarea.form-control:focus {
+        border-color: #0056b3;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        background-color: #ffffff;
+    }
+
