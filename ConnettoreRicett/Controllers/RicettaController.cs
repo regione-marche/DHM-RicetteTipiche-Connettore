@@ -585,7 +585,7 @@ namespace ConnettoreRicett.Controllers
                                         taxonomyIds.Add(temaId);
                                     }
 
-                                    // Converto il HashSet in List e assegnalo alla ricetta
+                                    // Converto HashSet in List e lo assegno alla ricetta
                                     ricetta.TaxonomyCategoryIds = taxonomyIds.ToList();
 
                                     _logger.LogInformation($"Invio ricetta: {ricetta.Denominazione}");

@@ -286,17 +286,17 @@
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="importCsvModalLabel">Importa Ricette da Excel</h5>
+                                    <h5 class="modal-title" id="importCsvModalLabel">Importa Ricette CSV</h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
                                     <form asp-action="ImportaExcel" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <label for="excelFile" class="form-label active">Seleziona file Excel</label>
+                                            <label for="excelFile" class="form-label active">Seleziona file Csv</label>
                                             <input type="file" name="excelFile" id="excelFile" class="form-control" required />
                                         </div>
                                         <div class="text-center mt-3">
-                                            <button type="submit" class="btn btn-primary">Carica Excel</button>
+                                            <button type="submit" class="btn btn-primary mb-3">Carica Csv</button>
                                         </div>
                                     </form>
                                 </div>
